@@ -38,26 +38,33 @@ confirmed_US <- confirmed_US[-grep("Princess", confirmed_US$Province.State),]
 confirmed_US$Province.State <- as.character(confirmed_US$Province.State)
 
 y <- colSums(confirmed_US[,-c(1:4)])
-plot(as.Date("2020-01-22") + 1:54,y,ylab = "Confirmed Cases", xlab = "Date", main = "US Confirmed Cases of Corona Virus")
-plot(as.Date("2020-01-22") + 38:54,y[38:54],ylab = "Confirmed Cases", xlab = "Date", main = "US Confirmed Cases of Corona Virus")
+plot(as.Date("2020-01-22") + 1:55,y,ylab = "Confirmed Cases", xlab = "Date", main = "US Confirmed Cases of Corona Virus")
+plot(as.Date("2020-01-22") + 38:55,y[38:55],ylab = "Confirmed Cases", xlab = "Date", main = "US Confirmed Cases of Corona Virus")
 
-plot(as.Date("2020-01-22") + 1:54,log(y),ylab = "Confirmed Cases (log scale)", xlab = "Date", main = "US Confirmed Cases of Corona Virus")
-plot(as.Date("2020-01-22") + 38:54,log(y[38:54]),ylab = "Confirmed Cases (log scale)", xlab = "Date", main = "US Confirmed Cases of Corona Virus")
+plot(as.Date("2020-01-22") + 1:55,log(y),ylab = "Confirmed Cases (log scale)", xlab = "Date", main = "US Confirmed Cases of Corona Virus")
+plot(as.Date("2020-01-22") + 38:55-1,log(y[38:55]),ylab = "Confirmed Cases (log scale)", xlab = "Date", main = "US Confirmed Cases of Corona Virus")
 
 
 #Model this as log linear
-dat <- data.frame(x = 1:17, y = y[38:54])
+dat <- data.frame(x = 1:18, y = y[38:55])
 a <- lm(log(y) ~ x, data = dat)
 summary(a)
 #model log(y) = beta0 + beta1*X
 # y = exp(beta0 + beta1*X) = exp(beta0)*exp(beta1*X)
 
+beta <- 0.340881
+as.Date("2020-01-22") + 55:(55+nrow(pred)-1)
+gamma <- 1/14
+R0 <- (beta / gamma) + 1
+R0
+
+
 pred <- exp(predict(a, newdata = data.frame(x = 18:60), interval = "predict"))
 exp(0.340881)
 
 #Now plot it only through April
-plot(as.Date("2020-01-22") + 38:54,y[38:54], xlim = c(as.Date("2020-01-22") + 38,as.Date("2020-01-22") + 70), ylim = c(0, 100000000), yaxt = 'n',xlab = "Date", ylab = "MILLIONS of Confirmed Cases", type = "l", main = "US Confirmed Cases of Corona Virus", sub = "Projection in blue with interval in red")
-points(as.Date("2020-01-22") + 38:54,y[38:54], xlim = c(as.Date("2020-01-22") + 38,as.Date("2020-01-22") + 100), cex = 0.5, pch = 16)
+plot(as.Date("2020-01-22") + 38:55,y[38:55], xlim = c(as.Date("2020-01-22") + 38,as.Date("2020-01-22") + 70), ylim = c(0, 100000000), yaxt = 'n',xlab = "Date", ylab = "MILLIONS of Confirmed Cases", type = "l", main = "US Confirmed Cases of Corona Virus", sub = "Projection in blue with interval in red")
+points(as.Date("2020-01-22") + 38:55,y[38:55], xlim = c(as.Date("2020-01-22") + 38,as.Date("2020-01-22") + 100), cex = 0.5, pch = 16)
 axis(2, at = c(1000000,20000000,100000000), labels = c("1","20","100"))
 
 points(as.Date("2020-01-22") + 55:(55+nrow(pred)-1), pred[,1], type = "l", col = "blue")
@@ -66,15 +73,15 @@ points(as.Date("2020-01-22") + 55:(55+nrow(pred)-1), pred[,3], type = "l", col =
 
 
 #Now plot it through April
-plot(as.Date("2020-01-22") + 38:54,y[38:54], xlim = c(as.Date("2020-01-22") + 38,as.Date("2020-01-22") + 100), ylim = c(0, 100000000), yaxt = 'n',xlab = "Date", ylab = "MILLIONS of Confirmed Cases", type = "l",main = "US Confirmed Cases of Corona Virus", sub = "Projection in blue with interval in red")
-points(as.Date("2020-01-22") + 38:54,y[38:54], xlim = c(as.Date("2020-01-22") + 38,as.Date("2020-01-22") + 100), cex = 0.5, pch = 16)
+plot(as.Date("2020-01-22") + 38:55,y[38:55], xlim = c(as.Date("2020-01-22") + 38,as.Date("2020-01-22") + 100), ylim = c(0, 100000000), yaxt = 'n',xlab = "Date", ylab = "MILLIONS of Confirmed Cases", type = "l",main = "US Confirmed Cases of Corona Virus", sub = "Projection in blue with interval in red")
+points(as.Date("2020-01-22") + 38:55,y[38:55], xlim = c(as.Date("2020-01-22") + 38,as.Date("2020-01-22") + 100), cex = 0.5, pch = 16)
 axis(2, at = c(1000000,20000000,100000000), labels = c("1","20","100"))
 
 points(as.Date("2020-01-22") + 55:(55+nrow(pred)-1), pred[,1], type = "l", col = "blue")
 points(as.Date("2020-01-22") + 55:(55+nrow(pred)-1), pred[,2], type = "l", col = "red")
 points(as.Date("2020-01-22") + 55:(55+nrow(pred)-1), pred[,3], type = "l", col = "red")
 
-
+data.frame(as.Date("2020-01-22") + 55:(55+nrow(pred)-1),pred)
 April 1 is 16
 April 15 is 30
 
@@ -123,7 +130,7 @@ plot(colSums(deaths_US[,-c(1:4)]))
 
 #Some exploratory stuff
 for (i in 1:nrow(confirmed_US_states)){print(i)
-plot(as.Date("2020-01-22") + 1:54,confirmed_US_states[i,-c(1:4)], main = confirmed_US_states$Province.State[i])
+  plot(as.Date("2020-01-22") + 1:54,confirmed_US_states[i,-c(1:4)], main = confirmed_US_states$Province.State[i])
 }
 
 
@@ -134,6 +141,6 @@ apply(confirmed_US_states[,-c(1:4)], 2, sum)
 
 
 
-             
+
 
 
