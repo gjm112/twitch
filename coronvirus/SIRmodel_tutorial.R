@@ -1,5 +1,5 @@
 library(deSolve)
-
+#https://rpubs.com/choisy/sir
 sir_equations <- function(time, variables, parameters) {
   with(as.list(c(variables, parameters)), {
     dS <- -beta * I * S
