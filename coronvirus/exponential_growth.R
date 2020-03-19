@@ -32,8 +32,8 @@ dat_list_real[[i]] <- dat <- data.frame(date = as.Date("2020-03-01") + 0:(length
                                    y = y[40:length(y)], 
                                    country = i)
 
-a <- lm(log(y) ~ t, data = dat)
-model_list[[i]] <- summary(a)
+model_list[[i]] <- a <- lm(log(y) ~ t, data = dat)
+
 
 pred <- data.frame(t = (length(y)-39 + 1):(length(y)-39 + 28))
 
@@ -46,8 +46,8 @@ dat_list_pred[[i]] <- data.frame(date = as.Date("2020-03-01") + 0:(length(y)-39-
 
 
 #Time to hit 1 million
-millions[[i]] <- data.frame(y = c(100000,1000000,10000000),
-             t = ceiling(c((log(100000) - a$coefficients[1])/a$coefficients[2],
+millions[[i]] <- data.frame(y = c(10000,100000,1000000,10000000),
+             t = ceiling(c((log(10000) - a$coefficients[1])/a$coefficients[2],(log(100000) - a$coefficients[1])/a$coefficients[2],
 (log(1000000) - a$coefficients[1])/a$coefficients[2],
 (log(10000000) - a$coefficients[1])/a$coefficients[2])))
 
@@ -59,3 +59,7 @@ millions[[i]]$date <- (as.Date("2020-03-01") + 0:100)[millions[[i]]$t]
 dat <- do.call(rbind, dat_list_pred)
 library(ggplot2)
 ggplot(aes(x = date, y = y, colour = country, shape = proj), data = dat) + scale_y_continuous(trans='log10') + geom_line() + geom_point() + geom_vline(xintercept = as.Date("2020-03-18")) + ylab("Confirmed Cases") + xlab("Date") 
+
+dat <- do.call(rbind, dat_list_pred)
+library(ggplot2)
+ggplot(aes(x = date, y = y, colour = country, shape = proj), data = dat)  + geom_line() + geom_point() + geom_vline(xintercept = as.Date("2020-03-18")) + ylab("Confirmed Cases") + xlab("Date") + ylim(0,25000000)
